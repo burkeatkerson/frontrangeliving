@@ -1,0 +1,51 @@
+# Editorial taxonomy for the whole site.
+# Adding a category / lane / column here makes it appear in navigation and on
+# the library filters. Content references these by slug.
+
+categories:
+  - { slug: moving-here,   label: Moving here,    blurb: The questions you ask before the truck is booked. }
+  - { slug: neighborhoods, label: Neighborhoods,  blurb: Block-level answers, not city-level ones. }
+  - { slug: eat,           label: Eat,            blurb: Where we actually eat, on a Tuesday, with no plan. }
+  - { slug: outside,       label: Outside,        blurb: Trails, water, snow, and where to park for all of it. }
+  - { slug: with-kids,     label: With kids,      blurb: Shade, bathrooms, and hikes a six-year-old will finish. }
+  - { slug: money,         label: Money,          blurb: What things cost and whether the math works. }
+
+lanes:
+  - slug: out-of-state
+    label: Moving from out of state
+    blurb: You have a job offer and thirty browser tabs. Four hundred miles down to three neighborhoods.
+  - slug: family
+    label: Family with kids under ten
+    blurb: Splash pads with shade, the good library, and the hike a six-year-old will actually finish.
+  - slug: first-time
+    label: Buying a first place
+    blurb: Where the money still goes furthest, and what a 1954 brick ranch is hiding.
+  - slug: investor
+    label: Investor from elsewhere
+    blurb: Rents against carry, submarket by submarket, and which city just changed its rules.
+    accent: true
+
+columns:
+  - slug: taco-report
+    label: The Taco Report
+    unit: entries
+    blurb: One window, one order, one paragraph, every Tuesday. Nothing with a parking lot bigger than its kitchen.
+  - slug: ten-minutes-to-dirt
+    label: Ten Minutes to Dirt
+    unit: trailheads
+    blurb: Weeknight trails, listed from the neighborhood you'd leave from, sorted by how bad the parking gets.
+  - slug: after-dark
+    label: After Dark
+    unit: entries
+    blurb: Rooms still full at eleven on a Wednesday - dive, patio, dance floor, or a piano nobody asked for.
+  - slug: saturday-with-kids
+    label: Saturday With Kids
+    unit: guides
+    blurb: Splash pads, snow-day museums, the short hikes with a real payoff, and where to park for all of it.
+
+regions:
+  - { slug: denver,            label: Denver neighborhoods }
+  - { slug: boulder-county,    label: Boulder County }
+  - { slug: jeffco,            label: Jeffco & the foothills }
+  - { slug: northern-colorado, label: Northern Colorado }
+  - { slug: the-springs,       label: The Springs }
