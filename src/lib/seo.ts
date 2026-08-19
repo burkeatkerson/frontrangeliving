@@ -189,18 +189,49 @@ function faqNode(doc: Doc): FAQPage | null {
   }
 }
 
+/**
+ * The real-world entity a place guide is about.
+ *
+ * City anchors emit `City` rather than the generic `Place`, with population,
+ * elevation and containment. That specificity is the whole point: it lets an
+ * answer engine resolve "how high is Woodland Park" or "what county is Erie
+ * in" from this page and attribute the figure to it.
+ */
 function placeNode(doc: Extract<Doc, { type: 'place' }>): SchemaPlace {
+  const civic = doc.civic
   return {
-    '@type': 'Place',
+    '@type': doc.kind === 'city' ? 'City' : 'Place',
     '@id': absoluteUrl(doc.url) + '#place',
     name: doc.name,
-    description: doc.summary,
+    description: doc.answer ?? doc.summary,
     address: {
       '@type': 'PostalAddress',
       addressLocality: doc.name,
       addressRegion: 'CO',
       addressCountry: 'US',
     },
+    // `elevation` is a real Place property; population is not, so it goes in
+    // additionalProperty as a typed PropertyValue rather than being invented.
+    ...(civic?.elevation ? { elevation: `${civic.elevation} ft` } : {}),
+    ...(civic?.population
+      ? {
+          additionalProperty: {
+            '@type': 'PropertyValue' as const,
+            name: 'population',
+            value: civic.population,
+            observationDate: String(civic.populationYear),
+          },
+        }
+      : {}),
+    ...(doc.county
+      ? {
+          containedInPlace: {
+            '@type': 'AdministrativeArea' as const,
+            name: doc.county,
+            containedInPlace: { '@type': 'State' as const, name: 'Colorado' },
+          },
+        }
+      : {}),
     ...(doc.geo
       ? {
           geo: {

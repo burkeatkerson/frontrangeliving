@@ -49,14 +49,59 @@ export default async function PlacePage({ params }: Props) {
         { name: place.name, path: place.url },
       ]}
       aside={
-        place.stats.length ? (
-          <div>
-            <Label small as="p" className="mb-2">
-              At a glance
-            </Label>
-            <StatList stats={place.stats} />
-          </div>
-        ) : null
+        <>
+          {place.stats.length ? (
+            <div>
+              <Label small as="p" className="mb-2">
+                At a glance
+              </Label>
+              <StatList stats={place.stats} />
+            </div>
+          ) : null}
+
+          {place.civic?.employers?.length ? (
+            <div className="border-rule border-t pt-4">
+              <Label small as="p" className="mb-2">
+                Largest employers
+              </Label>
+              <ul className="text-body space-y-1 text-sm leading-snug">
+                {place.civic.employers.map((e) => (
+                  <li key={e}>{e}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          {place.civic?.transit?.length ? (
+            <div className="border-rule border-t pt-4">
+              <Label small as="p" className="mb-2">
+                Getting around
+              </Label>
+              <ul className="text-body space-y-1.5 text-sm leading-snug">
+                {place.civic.transit.map((t) => (
+                  <li key={t}>{t}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          {place.links.length ? (
+            <div className="border-rule border-t pt-4">
+              <Label small as="p" className="mb-2">
+                Official sources
+              </Label>
+              <ul className="space-y-1.5 text-sm leading-snug">
+                {place.links.map((l) => (
+                  <li key={l.url}>
+                    <a href={l.url} target="_blank" rel="noopener noreferrer">
+                      {l.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+        </>
       }
     >
       {asked.length ? (

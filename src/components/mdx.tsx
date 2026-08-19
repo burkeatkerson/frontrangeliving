@@ -2,6 +2,14 @@ import * as runtime from 'react/jsx-runtime'
 import type { ComponentPropsWithoutRef, ReactNode } from 'react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import {
+  CorridorMap,
+  PriceLadder,
+  DriveTimes,
+  ElevationScale,
+  FactTable,
+  PhotoSlot,
+} from './visuals'
 
 /**
  * Velite compiles each MDX body to a function-body string. Evaluating it here
@@ -49,6 +57,13 @@ const components: MDXComponents = {
   a: Anchor as never,
   Note: Note as never,
   Stat: Stat as never,
+  // Visual aids for the city anchors. See components/visuals.tsx.
+  CorridorMap: CorridorMap as never,
+  PriceLadder: PriceLadder as never,
+  DriveTimes: DriveTimes as never,
+  ElevationScale: ElevationScale as never,
+  FactTable: FactTable as never,
+  PhotoSlot: PhotoSlot as never,
   img: ((props: ComponentPropsWithoutRef<'img'>) => (
     // eslint-disable-next-line @next/next/no-img-element
     <img {...props} alt={props.alt ?? ''} loading="lazy" decoding="async" className="w-full" />

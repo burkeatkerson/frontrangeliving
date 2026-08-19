@@ -127,9 +127,54 @@ const places = defineCollection({
       name: s.string(),
       county: s.string().optional(),
       region: s.string(), // "Denver", "Boulder County", "Northern Colorado", ...
+      /**
+       * `city` marks a municipal anchor article — the definitive page for a
+       * whole town. `neighborhood` is a district inside one. Anchors get the
+       * civic facts block, the corridor map, and richer structured data.
+       */
+      kind: s.enum(['city', 'neighborhood']).default('neighborhood'),
       /** Quick-scan stat lines shown in the sidebar and in answer cards. */
       stats: s.array(s.string()).default([]),
       geo: s.object({ lat: s.number(), lng: s.number() }).optional(),
+      /**
+       * Civic facts for a municipal anchor. Every number here is rendered with
+       * its source, and feeds the schema.org `City` node — so an answer engine
+       * asked "how high is Loveland" gets a figure it can attribute.
+       */
+      civic: s
+        .object({
+          /** Omitted rather than estimated when no cited figure is available. */
+          population: s.number().optional(),
+          populationYear: s.number().default(2020),
+          /** Feet above sea level, at the civic centre. */
+          elevation: s.number().optional(),
+          incorporated: s.number().optional(),
+          /** True when the city is its county's seat. */
+          countySeat: s.boolean().default(false),
+          /** Land area in square miles. */
+          area: s.number().optional(),
+          schoolDistricts: s.array(s.string()).default([]),
+          employers: s.array(s.string()).default([]),
+          /** RTD rail/bus, Bustang, or future Colorado Connector service. */
+          transit: s.array(s.string()).default([]),
+          /** Driving minutes in normal midday traffic. */
+          drive: s
+            .object({
+              denver: s.number().optional(),
+              boulder: s.number().optional(),
+              dia: s.number().optional(),
+              springs: s.number().optional(),
+            })
+            .optional(),
+          /** Median sale price, with the source that produced it. */
+          median: s.number().optional(),
+          medianBasis: s.string().optional(),
+        })
+        .optional(),
+      /** Outbound authoritative links: city hall, school district, data sources. */
+      links: s
+        .array(s.object({ label: s.string(), url: s.string().url(), note: s.string().optional() }))
+        .default([]),
     })
     .transform((data) => ({
       ...data,

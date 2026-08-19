@@ -44,8 +44,12 @@ columns:
     blurb: Splash pads, snow-day museums, the short hikes with a real payoff, and where to park for all of it.
 
 regions:
-  - { slug: denver,            label: Denver neighborhoods }
-  - { slug: boulder-county,    label: Boulder County }
-  - { slug: jeffco,            label: Jeffco & the foothills }
   - { slug: northern-colorado, label: Northern Colorado }
+  - { slug: boulder-county,    label: Boulder County }
+  - { slug: north-metro,       label: The north metro }
+  - { slug: denver,            label: Denver }
+  - { slug: jeffco,            label: Jeffco & the foothills }
+  - { slug: south-metro,       label: The south metro }
+  - { slug: douglas-county,    label: Douglas County }
   - { slug: the-springs,       label: The Springs }
+  - { slug: pueblo,            label: Pueblo }
