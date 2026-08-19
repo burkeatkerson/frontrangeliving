@@ -27,15 +27,15 @@ export default function ColumnsIndex() {
       items={summarize(allColumns.slice(0, 12))}
       total={allColumns.length}
     >
-      <div className="mt-8 grid gap-px border border-edge bg-edge sm:grid-cols-2">
+      <div className="border-edge bg-edge mt-8 grid gap-px border sm:grid-cols-2">
         {columnDefs.map((col) => (
           <Link
             key={col.slug}
             href={`/columns/${col.slug}`}
             className="group bg-bone p-6 transition-shadow hover:shadow-[inset_0_0_0_1px_var(--color-ink)]"
           >
-            <h2 className="text-[1.625rem] text-ink group-hover:text-rust">{col.label}</h2>
-            <p className="mt-2 text-sm leading-relaxed text-body">{col.blurb}</p>
+            <h2 className="text-ink group-hover:text-rust text-[1.625rem]">{col.label}</h2>
+            <p className="text-body mt-2 text-sm leading-relaxed">{col.blurb}</p>
             <span className="label-sm mt-3 block">
               {entriesInColumn(col.slug).length} {col.unit}
             </span>
@@ -43,7 +43,7 @@ export default function ColumnsIndex() {
         ))}
       </div>
 
-      <h2 className="mt-14 border-b border-rule pb-3 text-[1.5rem]">Latest across all columns</h2>
+      <h2 className="border-rule mt-14 border-b pb-3 text-[1.5rem]">Latest across all columns</h2>
     </ListingPage>
   )
 }

@@ -26,9 +26,9 @@ function Anchor({ href = '', ...props }: ComponentPropsWithoutRef<'a'>) {
 /** `<Note>` — the inset caveat used for regulatory and "we could be wrong" copy. */
 function Note({ children, label }: { children: ReactNode; label?: string }) {
   return (
-    <aside className="not-prose my-7 border-l-2 border-rust bg-bone-2 px-5 py-4">
+    <aside className="not-prose border-rust bg-bone-2 my-7 border-l-2 px-5 py-4">
       {label ? <div className="label mb-1.5">{label}</div> : null}
-      <div className="text-[0.9375rem] leading-relaxed text-body [&>p]:m-0 [&>p+p]:mt-3">
+      <div className="text-body text-[0.9375rem] leading-relaxed [&>p]:m-0 [&>p+p]:mt-3">
         {children}
       </div>
     </aside>
@@ -39,7 +39,7 @@ function Note({ children, label }: { children: ReactNode; label?: string }) {
 function Stat({ value, caption }: { value: string; caption: string }) {
   return (
     <span className="not-prose mr-6 inline-flex flex-col align-top">
-      <span className="font-display text-3xl leading-none text-ink">{value}</span>
+      <span className="font-display text-ink text-3xl leading-none">{value}</span>
       <span className="label-sm mt-1">{caption}</span>
     </span>
   )
@@ -80,6 +80,10 @@ export function MDXContent({ code, className }: { code: string; className?: stri
         className
       )}
     >
+      {/* The rule guards against components losing state when recreated each
+          render. This one is compiled from a build-time constant and rendered
+          on the server only, so there is no state to lose. */}
+      {/* eslint-disable-next-line react-hooks/static-components */}
       <Component components={components} />
     </div>
   )

@@ -82,17 +82,21 @@ export function ListingPage({
           </ol>
         </nav>
 
-        {eyebrow ? <Label small className="mb-3 block">{eyebrow}</Label> : null}
+        {eyebrow ? (
+          <Label small className="mb-3 block">
+            {eyebrow}
+          </Label>
+        ) : null}
 
-        <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2 border-b border-ink pb-4">
+        <div className="border-ink flex flex-wrap items-baseline gap-x-5 gap-y-2 border-b pb-4">
           <h1 className="text-[clamp(2rem,5vw,3rem)] leading-tight tracking-[-0.02em]">{title}</h1>
-          <span className="label ml-auto normal-case tracking-[0.04em]">
+          <span className="label ml-auto tracking-[0.04em] normal-case">
             {count} {count === 1 ? 'entry' : 'entries'}
           </span>
         </div>
 
         {intro ? (
-          <p className="mt-5 max-w-[46em] text-base leading-relaxed text-body">{intro}</p>
+          <p className="text-body mt-5 max-w-[46em] text-base leading-relaxed">{intro}</p>
         ) : null}
 
         {filters?.length ? (

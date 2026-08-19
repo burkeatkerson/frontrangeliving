@@ -1,14 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { site, absoluteUrl } from '@/lib/site'
-import {
-  allDocs,
-  allAnswers,
-  allTags,
-  categories,
-  columnDefs,
-  lanes,
-  regions,
-} from '@/lib/content'
+import { allDocs, allAnswers, allTags, categories, columnDefs, lanes, regions } from '@/lib/content'
 import { paginate } from '@/lib/utils'
 
 // Emitted as a static file by `output: 'export'`.

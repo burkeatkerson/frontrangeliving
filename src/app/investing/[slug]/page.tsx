@@ -45,14 +45,14 @@ export default async function InvestingBriefPage({ params }: Props) {
         ) : null
       }
     >
-      <aside className="mt-8 border-l-2 border-rust bg-bone-2 px-5 py-4">
+      <aside className="border-rust bg-bone-2 mt-8 border-l-2 px-5 py-4">
         <Label small className="mb-1.5 block">
           Read this first
         </Label>
-        <p className="text-[0.9375rem] leading-relaxed text-body">
+        <p className="text-body text-[0.9375rem] leading-relaxed">
           These are our numbers and our read, not investment or legal advice. Regulations on this
-          page change faster than almost anything else we track — check the revision date and
-          verify with the city before you write an offer.
+          page change faster than almost anything else we track — check the revision date and verify
+          with the city before you write an offer.
         </p>
       </aside>
     </ArticlePage>

@@ -202,7 +202,13 @@ function placeNode(doc: Extract<Doc, { type: 'place' }>): SchemaPlace {
       addressCountry: 'US',
     },
     ...(doc.geo
-      ? { geo: { '@type': 'GeoCoordinates' as const, latitude: doc.geo.lat, longitude: doc.geo.lng } }
+      ? {
+          geo: {
+            '@type': 'GeoCoordinates' as const,
+            latitude: doc.geo.lat,
+            longitude: doc.geo.lng,
+          },
+        }
       : {}),
   } as SchemaPlace
 }
@@ -315,6 +321,11 @@ export function listingGraph(opts: {
 
   return {
     '@context': 'https://schema.org',
-    '@graph': [organizationNode as Thing, websiteNode as Thing, page as Thing, breadcrumbNode(opts.crumbs) as Thing],
+    '@graph': [
+      organizationNode as Thing,
+      websiteNode as Thing,
+      page as Thing,
+      breadcrumbNode(opts.crumbs) as Thing,
+    ],
   } as Graph
 }

@@ -13,7 +13,7 @@ export function Shell({
   as?: 'div' | 'section' | 'header' | 'footer' | 'main' | 'nav' | 'article'
 } & React.HTMLAttributes<HTMLElement>) {
   return (
-    <Tag className={cn('mx-auto w-full max-w-shell px-5 sm:px-8 lg:px-10', className)} {...rest}>
+    <Tag className={cn('max-w-shell mx-auto w-full px-5 sm:px-8 lg:px-10', className)} {...rest}>
       {children}
     </Tag>
   )
@@ -55,7 +55,7 @@ export function SectionHead({
     <div
       className={cn(
         'flex flex-wrap items-baseline gap-x-5 gap-y-2 pb-3.5',
-        heavy ? 'border-b border-ink' : 'border-b border-rule',
+        heavy ? 'border-ink border-b' : 'border-rule border-b',
         className
       )}
     >
@@ -65,7 +65,7 @@ export function SectionHead({
       >
         {title}
       </h2>
-      {note ? <span className="label ml-auto normal-case tracking-[0.04em]">{note}</span> : null}
+      {note ? <span className="label ml-auto tracking-[0.04em] normal-case">{note}</span> : null}
     </div>
   )
 }
@@ -76,7 +76,7 @@ export function StatList({ stats, className }: { stats: readonly string[]; class
   return (
     <dl
       className={cn(
-        'border-t border-rule pt-2.5 font-mono text-[0.6875rem] leading-loose text-muted',
+        'border-rule text-muted border-t pt-2.5 font-mono text-[0.6875rem] leading-loose',
         className
       )}
     >
@@ -106,7 +106,7 @@ export function ArrowLink({
   className?: string
 }) {
   return (
-    <a href={href} className={cn('font-mono text-[0.6875rem] hover:text-rust-deep', className)}>
+    <a href={href} className={cn('hover:text-rust-deep font-mono text-[0.6875rem]', className)}>
       {children} →
     </a>
   )

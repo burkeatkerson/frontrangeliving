@@ -7,7 +7,7 @@
     "build": "next build && npm run search:index",
     "search:index": "pagefind --site out --output-subdir pagefind",
     "start": "npx --yes serve out -l 3000",
-    "lint": "next lint",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write \"**/*.{ts,tsx,css,md,mdx,json,yml}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,css,md,mdx,json,yml}\"",

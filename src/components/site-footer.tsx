@@ -11,7 +11,7 @@ function FooterColumn({
   links: readonly { href: string; label: string }[]
 }) {
   return (
-    <div className="text-sm leading-[2.1] text-body">
+    <div className="text-body text-sm leading-[2.1]">
       <Label small className="mb-1.5 block">
         {heading}
       </Label>
@@ -29,12 +29,12 @@ function FooterColumn({
 export function SiteFooter() {
   return (
     <footer className="mt-20">
-      <Shell className="pb-14 pt-16">
+      <Shell className="pt-16 pb-14">
         <div className="rule-faded mb-7" />
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <span className="font-display text-[1.375rem]">{site.name}</span>
-            <p className="mt-2 font-mono text-[0.6875rem] leading-[1.9] text-faint">
+            <p className="text-faint mt-2 font-mono text-[0.6875rem] leading-[1.9]">
               frontrangeliving.com
               <br />
               {site.address.locality}, Colorado
@@ -62,8 +62,8 @@ export function SiteFooter() {
           />
         </div>
 
-        <div className="mt-12 flex flex-wrap items-baseline gap-x-6 gap-y-2 border-t border-rule pt-6">
-          <p className="max-w-2xl font-mono text-[0.6875rem] leading-relaxed text-faint">
+        <div className="border-rule mt-12 flex flex-wrap items-baseline gap-x-6 gap-y-2 border-t pt-6">
+          <p className="text-faint max-w-2xl font-mono text-[0.6875rem] leading-relaxed">
             {site.disclosure}
           </p>
           <div className="ml-auto flex gap-5">

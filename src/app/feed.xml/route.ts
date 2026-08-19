@@ -4,11 +4,7 @@ import { allDocs } from '@/lib/content'
 export const dynamic = 'force-static'
 
 const escape = (input: string) =>
-  input
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
+  input.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
 /** Newest 100 documents across every collection. */
 export function GET() {

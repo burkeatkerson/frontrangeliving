@@ -1,39 +1,47 @@
 'use client'
 
-import { useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-export interface AskEntry {
+interface AskEntry {
+  /** question */
   q: string
-  url: string
-  /** Extra match terms — tags and category — kept short to keep the payload small. */
+  /** url */
+  u: string
+  /** extra match terms: tags + category */
   k: string
 }
 
 /**
  * The hero ask field.
  *
- * Matching runs against a compact index of question strings rather than the
- * full corpus, so the client payload stays flat as the library grows. Anything
- * the index cannot answer confidently falls through to the Pagefind-backed
- * search page rather than showing a dead end.
+ * The question index is fetched from `/ask-index.json` on first keystroke
+ * rather than embedded in the page, so the home page payload does not grow
+ * with the library. Anything the index cannot match confidently falls through
+ * to the Pagefind-backed search page rather than showing a dead end.
  */
-export function AskBox({
-  index,
-  chips,
-}: {
-  index: readonly AskEntry[]
-  chips: readonly { label: string; url: string }[]
-}) {
+export function AskBox({ chips }: { chips: readonly { label: string; url: string }[] }) {
   const router = useRouter()
   const [typed, setTyped] = useState('')
   const [focused, setFocused] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const [index, setIndex] = useState<AskEntry[]>([])
+  const loading = useRef(false)
+
+  const loadIndex = useCallback(async () => {
+    if (loading.current) return
+    loading.current = true
+    try {
+      const res = await fetch('/ask-index.json')
+      if (res.ok) setIndex((await res.json()) as AskEntry[])
+    } catch {
+      // Suggestions are an enhancement; the Ask button still routes to search.
+    }
+  }, [])
 
   const matches = useMemo(() => {
     const query = typed.trim().toLowerCase()
-    if (query.length < 3) return []
+    if (query.length < 3 || !index.length) return []
     const words = query.split(/\s+/).filter((w) => w.length > 2)
     if (!words.length) return []
 
@@ -41,9 +49,7 @@ export function AskBox({
       .map((entry) => {
         const haystack = `${entry.q} ${entry.k}`.toLowerCase()
         let score = 0
-        for (const word of words) {
-          if (haystack.includes(word)) score += 1
-        }
+        for (const word of words) if (haystack.includes(word)) score += 1
         if (haystack.includes(query)) score += 3
         return { entry, score }
       })
@@ -57,7 +63,7 @@ export function AskBox({
     const query = typed.trim()
     if (!query) return
     if (matches.length === 1) {
-      router.push(matches[0]!.url)
+      router.push(matches[0]!.u)
       return
     }
     router.push(`/search?q=${encodeURIComponent(query)}`)
@@ -67,13 +73,12 @@ export function AskBox({
 
   return (
     <div className="relative">
-      <div className="flex max-w-4xl items-center gap-4 border-b-2 border-ink pb-3.5">
-        <label htmlFor="frl-ask" className="label shrink-0 text-rust">
+      <div className="border-ink flex max-w-4xl items-center gap-4 border-b-2 pb-3.5">
+        <label htmlFor="frl-ask" className="label text-rust shrink-0">
           You
         </label>
         <input
           id="frl-ask"
-          ref={inputRef}
           type="search"
           role="combobox"
           aria-expanded={showSuggestions}
@@ -81,18 +86,24 @@ export function AskBox({
           aria-autocomplete="list"
           autoComplete="off"
           value={typed}
-          onChange={(e) => setTyped(e.target.value)}
-          onFocus={() => setFocused(true)}
-          // Delay so a click on a suggestion lands before the list unmounts.
+          onChange={(e) => {
+            setTyped(e.target.value)
+            void loadIndex()
+          }}
+          onFocus={() => {
+            setFocused(true)
+            void loadIndex()
+          }}
+          // Delayed so a click on a suggestion lands before the list unmounts.
           onBlur={() => window.setTimeout(() => setFocused(false), 150)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') submit()
             if (e.key === 'Escape') setFocused(false)
           }}
           placeholder="where do I live if I want a yard, a taco truck, and a 25-minute commute"
-          className="min-w-0 flex-1 border-0 bg-transparent p-0 font-display text-xl italic leading-snug text-ink outline-none placeholder:text-dim sm:text-2xl md:text-[1.875rem] [&::-webkit-search-cancel-button]:appearance-none"
+          className="font-display text-ink placeholder:text-dim min-w-0 flex-1 border-0 bg-transparent p-0 text-xl leading-snug italic outline-none sm:text-2xl md:text-[1.875rem] [&::-webkit-search-cancel-button]:appearance-none"
         />
-        <button type="button" onClick={submit} className="chip shrink-0 border-ink text-ink">
+        <button type="button" onClick={submit} className="chip border-ink text-ink shrink-0">
           Ask
         </button>
       </div>
@@ -101,13 +112,13 @@ export function AskBox({
         <ul
           id="frl-ask-suggestions"
           role="listbox"
-          className="absolute left-0 right-0 top-full z-30 max-w-4xl border border-edge border-t-0 bg-paper shadow-sm"
+          className="border-edge bg-paper absolute inset-x-0 top-full z-30 max-w-4xl border border-t-0 shadow-sm"
         >
           {matches.map((m) => (
-            <li key={m.url} role="option" aria-selected={false}>
+            <li key={m.u} role="option" aria-selected={false}>
               <Link
-                href={m.url}
-                className="block border-b border-rule px-4 py-3 text-[0.9375rem] leading-snug text-ink last:border-b-0 hover:bg-bone-2"
+                href={m.u}
+                className="border-rule text-ink hover:bg-bone-2 block border-b px-4 py-3 text-[0.9375rem] leading-snug last:border-b-0"
               >
                 {m.q}
               </Link>
@@ -116,7 +127,7 @@ export function AskBox({
           <li>
             <Link
               href={`/search?q=${encodeURIComponent(typed.trim())}`}
-              className="label block bg-bone-2 px-4 py-3 hover:text-ink"
+              className="label bg-bone-2 hover:text-ink block px-4 py-3"
             >
               Search everything for “{typed.trim()}” →
             </Link>

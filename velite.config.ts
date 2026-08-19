@@ -23,7 +23,11 @@ const remarkSmartypants = remarkSmartypantsRaw as unknown as typeof remarkGfm
 
 /** Derive the public slug from the file path, with a frontmatter override. */
 const slugFrom = (path: string, override?: string) =>
-  override ?? path.split('/').pop()!.replace(/\.mdx?$/, '')
+  override ??
+  path
+    .split('/')
+    .pop()!
+    .replace(/\.mdx?$/, '')
 
 /** Fields shared by every document type. */
 const base = {
@@ -181,14 +185,12 @@ const investing = defineCollection({
 const pages = defineCollection({
   name: 'Page',
   pattern: 'pages/**/*.mdx',
-  schema: s
-    .object({ ...base, ...aeo, ...body, path: s.path() })
-    .transform((data) => ({
-      ...data,
-      type: 'page' as const,
-      slug: slugFrom(data.path, data.slug),
-      url: `/${slugFrom(data.path, data.slug)}`,
-    })),
+  schema: s.object({ ...base, ...aeo, ...body, path: s.path() }).transform((data) => ({
+    ...data,
+    type: 'page' as const,
+    slug: slugFrom(data.path, data.slug),
+    url: `/${slugFrom(data.path, data.slug)}`,
+  })),
 })
 
 const authors = defineCollection({
@@ -252,7 +254,10 @@ export default defineConfig({
     rehypePlugins: [
       rehypeSlug,
       [rehypeAutolinkHeadings, { behavior: 'wrap', properties: { className: ['heading-anchor'] } }],
-      [rehypePrettyCode, { theme: { light: 'github-light', dark: 'github-dark' }, keepBackground: false }],
+      [
+        rehypePrettyCode,
+        { theme: { light: 'github-light', dark: 'github-dark' }, keepBackground: false },
+      ],
     ],
   },
   markdown: {

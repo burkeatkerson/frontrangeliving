@@ -32,9 +32,11 @@ export default function TopicsIndex() {
         <Label small className="mb-3 block">
           Everything, cross-cut
         </Label>
-        <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2 border-b border-ink pb-4">
+        <div className="border-ink flex flex-wrap items-baseline gap-x-5 gap-y-2 border-b pb-4">
           <h1 className="text-[clamp(2rem,5vw,3rem)] leading-tight tracking-[-0.02em]">Topics</h1>
-          <span className="label ml-auto normal-case tracking-[0.04em]">{allTags.length} topics</span>
+          <span className="label ml-auto tracking-[0.04em] normal-case">
+            {allTags.length} topics
+          </span>
         </div>
 
         <ul className="mt-7 flex flex-wrap gap-2">
@@ -42,7 +44,7 @@ export default function TopicsIndex() {
             <li key={tag.slug}>
               <Link href={`/topics/${tag.slug}`} className="chip chip-round">
                 {tag.label}
-                <span className="ml-2 text-faint">{tag.count}</span>
+                <span className="text-faint ml-2">{tag.count}</span>
               </Link>
             </li>
           ))}

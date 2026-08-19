@@ -41,7 +41,7 @@ export default async function ColumnEntryPage({ params }: Props) {
       ]}
       aside={
         place ? (
-          <div className="border-t border-rule pt-4">
+          <div className="border-rule border-t pt-4">
             <Label small as="p" className="mb-2">
               Nearby
             </Label>

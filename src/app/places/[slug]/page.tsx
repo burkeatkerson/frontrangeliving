@@ -60,7 +60,7 @@ export default async function PlacePage({ params }: Props) {
       }
     >
       {asked.length ? (
-        <section className="border-b border-rule py-8" aria-labelledby="asked-heading">
+        <section className="border-rule border-b py-8" aria-labelledby="asked-heading">
           <Label small as="p" className="mb-3">
             <span id="asked-heading">Answers that send people here</span>
           </Label>
@@ -69,7 +69,7 @@ export default async function PlacePage({ params }: Props) {
       ) : null}
 
       {entries.length ? (
-        <section className="border-b border-rule py-8" aria-labelledby="entries-heading">
+        <section className="border-rule border-b py-8" aria-labelledby="entries-heading">
           <Label small as="p" className="mb-3">
             <span id="entries-heading">From the columns</span>
           </Label>
@@ -78,7 +78,7 @@ export default async function PlacePage({ params }: Props) {
       ) : null}
 
       {region ? (
-        <p className="pt-6 text-[0.9375rem] text-muted">
+        <p className="text-muted pt-6 text-[0.9375rem]">
           More in <Link href={`/places/region/${region.slug}`}>{region.label}</Link>.
         </p>
       ) : null}

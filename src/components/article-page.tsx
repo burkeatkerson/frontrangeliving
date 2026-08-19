@@ -40,17 +40,20 @@ function Breadcrumbs({ crumbs }: { crumbs: readonly Crumb[] }) {
 /** In-page table of contents, shown when a document has enough structure to need one. */
 function Toc({ toc }: { toc: Doc['toc'] }) {
   // Velite nests sub-headings under `items`; flatten one level for a compact list.
-  const items = toc.flatMap((t) => [{ ...t, sub: false }, ...t.items.map((i) => ({ ...i, sub: true }))])
+  const items = toc.flatMap((t) => [
+    { ...t, sub: false },
+    ...t.items.map((i) => ({ ...i, sub: true })),
+  ])
   if (items.length < 3) return null
   return (
-    <nav aria-labelledby="toc-heading" className="border-t border-rule pt-4">
+    <nav aria-labelledby="toc-heading" className="border-rule border-t pt-4">
       <Label small as="p" className="mb-2">
         <span id="toc-heading">On this page</span>
       </Label>
       <ol className="space-y-1.5">
         {items.map((item) => (
           <li key={item.url} className={item.sub ? 'pl-3' : undefined}>
-            <a href={item.url} className="text-sm leading-snug text-body hover:text-rust">
+            <a href={item.url} className="text-body hover:text-rust text-sm leading-snug">
               {item.title}
             </a>
           </li>
@@ -94,8 +97,12 @@ export function ArticlePage({
       <Shell as="article" className="pt-10" data-pagefind-body>
         <Breadcrumbs crumbs={crumbs} />
 
-        <header className="mt-6 border-b border-ink pb-7">
-          {eyebrow ? <Label small className="mb-3 block">{eyebrow}</Label> : null}
+        <header className="border-ink mt-6 border-b pb-7">
+          {eyebrow ? (
+            <Label small className="mb-3 block">
+              {eyebrow}
+            </Label>
+          ) : null}
           <h1 className="max-w-[20em] text-[clamp(2rem,5.5vw,3.5rem)] leading-[1.05] tracking-[-0.02em]">
             {heading}
           </h1>
@@ -112,8 +119,8 @@ export function ArticlePage({
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_16rem]">
           <div className="min-w-0">
             {doc.answer ? (
-              <div className="border-b border-rule py-8">
-                <Label small className="mb-3 block text-rust">
+              <div className="border-rule border-b py-8">
+                <Label small className="text-rust mb-3 block">
                   The short answer
                 </Label>
                 <SpeakableAnswer>{doc.answer}</SpeakableAnswer>
@@ -129,13 +136,12 @@ export function ArticlePage({
             <FaqList faq={doc.faq} />
             <Sources sources={doc.sources} />
 
-            <aside className="mt-12 border-t border-rule pt-5">
+            <aside className="border-rule mt-12 border-t pt-5">
               <Label small className="block">
                 Disclosure
               </Label>
-              <p className="mt-2 max-w-[46em] text-sm leading-relaxed text-muted">
-                {site.disclosure}{' '}
-                <Link href="/work-with-us">Work with us →</Link>
+              <p className="text-muted mt-2 max-w-[46em] text-sm leading-relaxed">
+                {site.disclosure} <Link href="/work-with-us">Work with us →</Link>
               </p>
             </aside>
           </div>
@@ -143,7 +149,7 @@ export function ArticlePage({
           <aside className="space-y-8 lg:sticky lg:top-24 lg:self-start" data-pagefind-ignore>
             <Toc toc={doc.toc} />
             {doc.tags.length ? (
-              <div className="border-t border-rule pt-4">
+              <div className="border-rule border-t pt-4">
                 <Label small as="p" className="mb-2">
                   Filed under
                 </Label>

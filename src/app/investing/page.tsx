@@ -33,7 +33,7 @@ export default function InvestingIndex() {
       items={summarize(allInvesting)}
       layout="grid"
     >
-      <div className="mt-6 grid gap-px border border-edge bg-edge sm:grid-cols-2 lg:grid-cols-4">
+      <div className="border-edge bg-edge mt-6 grid gap-px border sm:grid-cols-2 lg:grid-cols-4">
         {KINDS.map((k) => {
           const n = allInvesting.filter((b) => b.kind === k.slug).length
           return (

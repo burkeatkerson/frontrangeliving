@@ -15,7 +15,7 @@ export function QuestionList({
   columns?: 1 | 2
 }) {
   if (!items.length) {
-    return <p className="py-8 text-[0.9375rem] text-muted">Nothing here yet.</p>
+    return <p className="text-muted py-8 text-[0.9375rem]">Nothing here yet.</p>
   }
   return (
     <ul className={cn('grid gap-x-12', columns === 2 && 'md:grid-cols-2')}>
@@ -23,10 +23,10 @@ export function QuestionList({
         <li key={item.url}>
           <Link
             href={item.url}
-            className="flex items-baseline justify-between gap-4 border-b border-rule py-3.5 pr-2 text-[0.9375rem] leading-snug text-ink transition-colors hover:bg-bone-2 hover:text-ink"
+            className="border-rule text-ink hover:bg-bone-2 hover:text-ink flex items-baseline justify-between gap-4 border-b py-3.5 pr-2 text-[0.9375rem] leading-snug transition-colors"
           >
             <span>{item.heading}</span>
-            <span className="shrink-0 whitespace-nowrap font-mono text-[0.6875rem] text-faint">
+            <span className="text-faint shrink-0 font-mono text-[0.6875rem] whitespace-nowrap">
               {item.meta ?? `${item.readingTime} min`}
             </span>
           </Link>
@@ -39,19 +39,24 @@ export function QuestionList({
 /** A roomier card grid, used where summaries earn their space. */
 export function DocGrid({ items }: { items: readonly DocSummary[] }) {
   if (!items.length) {
-    return <p className="py-8 text-[0.9375rem] text-muted">Nothing here yet.</p>
+    return <p className="text-muted py-8 text-[0.9375rem]">Nothing here yet.</p>
   }
   return (
-    <div className="grid gap-px bg-edge sm:grid-cols-2 lg:grid-cols-3">
+    <div className="bg-edge grid gap-px sm:grid-cols-2 lg:grid-cols-3">
       {items.map((item) => (
-        <article key={item.url} className="group bg-bone p-6 transition-shadow hover:shadow-[inset_0_0_0_1px_var(--color-ink)]">
-          {item.category ? <div className="label-sm mb-2">{item.category.replace(/-/g, ' ')}</div> : null}
+        <article
+          key={item.url}
+          className="group bg-bone p-6 transition-shadow hover:shadow-[inset_0_0_0_1px_var(--color-ink)]"
+        >
+          {item.category ? (
+            <div className="label-sm mb-2">{item.category.replace(/-/g, ' ')}</div>
+          ) : null}
           <h3 className="text-[1.375rem] leading-tight">
             <Link href={item.url} className="text-ink group-hover:text-rust">
               {item.heading}
             </Link>
           </h3>
-          <p className="mt-2.5 text-sm leading-relaxed text-body">{item.summary}</p>
+          <p className="text-body mt-2.5 text-sm leading-relaxed">{item.summary}</p>
           <div className="label-sm mt-4 flex gap-4">
             <time dateTime={item.date}>{formatDate(item.updated ?? item.date)}</time>
             <span>{item.readingTime} min</span>
@@ -81,7 +86,10 @@ export function Pagination({
   const numbers = [...window].filter((n) => n >= 1 && n <= totalPages).sort((a, b) => a - b)
 
   return (
-    <nav aria-label="Pagination" className="mt-12 flex items-center gap-2 border-t border-rule pt-6">
+    <nav
+      aria-label="Pagination"
+      className="border-rule mt-12 flex items-center gap-2 border-t pt-6"
+    >
       {page > 1 ? (
         <Link href={href(page - 1)} className="chip" rel="prev">
           Previous

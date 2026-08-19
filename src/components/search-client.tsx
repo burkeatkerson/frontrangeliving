@@ -56,14 +56,18 @@ export function SearchClient() {
     let cancelled = false
     const term = query.trim()
 
-    if (term.length < 2) {
-      setResults([])
-      setState('idle')
-      return
-    }
-
-    setState('loading')
+    // Everything, including the reset, happens inside the debounce timer so no
+    // state is set synchronously during the effect.
     const timer = window.setTimeout(async () => {
+      if (cancelled) return
+
+      if (term.length < 2) {
+        setResults([])
+        setState('idle')
+        return
+      }
+
+      setState('loading')
       const pf = await load()
       if (!pf || cancelled) return
       const search = await pf.search(term)
@@ -88,8 +92,8 @@ export function SearchClient() {
 
   return (
     <div>
-      <div className="flex items-center gap-4 border-b-2 border-ink pb-3.5">
-        <label htmlFor="frl-search" className="label shrink-0 text-rust">
+      <div className="border-ink flex items-center gap-4 border-b-2 pb-3.5">
+        <label htmlFor="frl-search" className="label text-rust shrink-0">
           Find
         </label>
         <input
@@ -99,20 +103,20 @@ export function SearchClient() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="green chile, sewer scope, splash pads, Louisville…"
-          className="min-w-0 flex-1 border-0 bg-transparent p-0 font-display text-xl italic leading-snug text-ink outline-none placeholder:text-dim sm:text-2xl md:text-[1.75rem] [&::-webkit-search-cancel-button]:appearance-none"
+          className="font-display text-ink placeholder:text-dim min-w-0 flex-1 border-0 bg-transparent p-0 text-xl leading-snug italic outline-none sm:text-2xl md:text-[1.75rem] [&::-webkit-search-cancel-button]:appearance-none"
         />
       </div>
 
       <div className="mt-6" aria-live="polite">
         {state === 'unavailable' ? (
-          <p className="text-[0.9375rem] text-muted">
+          <p className="text-muted text-[0.9375rem]">
             The search index isn’t built yet. Run <code className="font-mono">npm run build</code>{' '}
             to generate it, then reload — search does not run in dev.
           </p>
         ) : state === 'loading' ? (
           <Label small>Searching…</Label>
         ) : state === 'ready' && results.length === 0 ? (
-          <p className="text-[0.9375rem] text-muted">
+          <p className="text-muted text-[0.9375rem]">
             Nothing matched “{query.trim()}”. Try fewer words — or{' '}
             <Link href="/answers">browse every answer</Link>.
           </p>
@@ -123,14 +127,14 @@ export function SearchClient() {
             </Label>
             <ul>
               {results.map((r) => (
-                <li key={r.url} className="border-b border-rule py-4">
+                <li key={r.url} className="border-rule border-b py-4">
                   <h2 className="text-xl leading-snug">
                     <Link href={r.url} className="text-ink hover:text-rust">
                       {r.meta.title ?? r.url}
                     </Link>
                   </h2>
                   <p
-                    className="mt-1.5 max-w-[52em] text-sm leading-relaxed text-body [&_mark]:bg-bone-2 [&_mark]:text-ink"
+                    className="text-body [&_mark]:bg-bone-2 [&_mark]:text-ink mt-1.5 max-w-[52em] text-sm leading-relaxed"
                     // Pagefind returns its own highlighted excerpt markup.
                     dangerouslySetInnerHTML={{ __html: r.excerpt }}
                   />
@@ -139,7 +143,7 @@ export function SearchClient() {
             </ul>
           </>
         ) : (
-          <p className="text-[0.9375rem] text-muted">
+          <p className="text-muted text-[0.9375rem]">
             Search runs over every answer, place guide, column entry and investing brief.
           </p>
         )}

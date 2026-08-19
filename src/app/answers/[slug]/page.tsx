@@ -42,7 +42,7 @@ export default async function AnswerPage({ params }: Props) {
       ]}
       aside={
         answer.lanes.length ? (
-          <div className="border-t border-rule pt-4">
+          <div className="border-rule border-t pt-4">
             <Label small as="p" className="mb-2">
               Asked most by
             </Label>
@@ -58,7 +58,7 @@ export default async function AnswerPage({ params }: Props) {
       }
     >
       {answer.places.length ? (
-        <section className="border-b border-rule py-9" aria-labelledby="picks-heading">
+        <section className="border-rule border-b py-9" aria-labelledby="picks-heading">
           <h2 id="picks-heading" className="sr-only">
             Where we would send you
           </h2>

@@ -18,7 +18,7 @@ import { revisionStamp } from '@/lib/utils'
 
 import { JsonLd } from '@/components/jsonld'
 import { Shell, Label, SectionHead } from '@/components/primitives'
-import { AskBox, type AskEntry } from '@/components/ask-box'
+import { AskBox } from '@/components/ask-box'
 import { AnswerPlaces, MoneyNote } from '@/components/answer-parts'
 import { LibraryBrowser, type LibraryGroup } from '@/components/library-browser'
 
@@ -32,12 +32,6 @@ export const metadata: Metadata = buildMetadata({
 const heroAnswer = allAnswers.find((a) => a.featured) ?? allAnswers[0]
 
 export default function HomePage() {
-  const askIndex: AskEntry[] = allAnswers.map((a) => ({
-    q: a.question,
-    url: a.url,
-    k: `${a.tags.join(' ')} ${a.category}`,
-  }))
-
   const chips = allAnswers
     .filter((a) => a.url !== heroAnswer?.url)
     .slice(0, 5)
@@ -63,19 +57,19 @@ export default function HomePage() {
       />
 
       {/* ---------------------------------------------------------- hero */}
-      <Shell as="section" className="pb-5 pt-16 sm:pt-[4.75rem]">
+      <Shell as="section" className="pt-16 pb-5 sm:pt-[4.75rem]">
         <Label small>{site.coverage.join(' · ')}</Label>
         <h1 className="my-4 max-w-[17em] text-[clamp(2.5rem,7vw,4.5rem)] leading-[1.02] tracking-[-0.025em]">
           {site.tagline}
         </h1>
         <div className="mt-7">
-          <AskBox index={askIndex} chips={chips} />
+          <AskBox chips={chips} />
         </div>
       </Shell>
 
       {/* -------------------------------------------------- featured answer */}
       {heroAnswer ? (
-        <Shell as="section" className="mt-11 border-t border-ink pt-11">
+        <Shell as="section" className="border-ink mt-11 border-t pt-11">
           <div className="flex flex-wrap items-baseline gap-4">
             <Label small>Answered by people who live here</Label>
             <Label small className="ml-auto">
@@ -83,19 +77,19 @@ export default function HomePage() {
             </Label>
           </div>
 
-          <h2 className="mb-2 mt-3.5 max-w-[26em] text-[clamp(1.625rem,3.5vw,2.375rem)] leading-[1.15]">
+          <h2 className="mt-3.5 mb-2 max-w-[26em] text-[clamp(1.625rem,3.5vw,2.375rem)] leading-[1.15]">
             <Link href={heroAnswer.url} className="text-ink hover:text-rust">
               {heroAnswer.question}
             </Link>
           </h2>
-          <p className="mb-7 max-w-[52em] text-base leading-[1.65] text-body">
+          <p className="text-body mb-7 max-w-[52em] text-base leading-[1.65]">
             {heroAnswer.summary}
           </p>
 
           <AnswerPlaces places={heroAnswer.places} />
           {heroAnswer.money ? <MoneyNote>{heroAnswer.money}</MoneyNote> : null}
 
-          <p className="mt-5 text-[0.9375rem] italic text-muted">
+          <p className="text-muted mt-5 text-[0.9375rem] italic">
             Not what you meant? Add the commute, the budget, or the dog and{' '}
             <Link href="/answers">ask again</Link> — the answer changes.
           </p>
@@ -109,7 +103,7 @@ export default function HomePage() {
           note={`${counts.answers} answered, and counting`}
         />
         <LibraryBrowser groups={groups} />
-        <p className="mt-5 text-[0.9375rem] text-muted">
+        <p className="text-muted mt-5 text-[0.9375rem]">
           Got one that isn&rsquo;t here? <Link href="/search">Search first</Link> — if we
           don&rsquo;t know, we go find out and it becomes a page.
         </p>
@@ -118,11 +112,11 @@ export default function HomePage() {
       {/* ---------------------------------------------------------- lanes */}
       <Shell as="section" className="pt-20">
         <h2 className="mb-1.5 text-[clamp(1.75rem,4vw,2.5rem)] tracking-[-0.015em]">Ask as a…</h2>
-        <p className="mb-6 max-w-[46em] text-base leading-relaxed text-body">
+        <p className="text-body mb-6 max-w-[46em] text-base leading-relaxed">
           The same four hundred miles answers differently depending on why you&rsquo;re looking.
           Pick the version of the question that&rsquo;s actually yours.
         </p>
-        <div className="grid gap-px border border-edge bg-edge sm:grid-cols-2 lg:grid-cols-4">
+        <div className="border-edge bg-edge grid gap-px border sm:grid-cols-2 lg:grid-cols-4">
           {lanes.map((lane, i) => {
             const n = answersInLane(lane.slug).length
             return (
@@ -133,13 +127,13 @@ export default function HomePage() {
                   lane.accent ? 'bg-bone-2' : 'bg-bone'
                 }`}
               >
-                <span className="font-mono text-[0.6875rem] text-rust">
+                <span className="text-rust font-mono text-[0.6875rem]">
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                <h3 className="mb-2.5 mt-2 text-[1.6875rem] leading-tight text-ink group-hover:text-rust">
+                <h3 className="text-ink group-hover:text-rust mt-2 mb-2.5 text-[1.6875rem] leading-tight">
                   {lane.label}
                 </h3>
-                <p className="mb-3 text-sm leading-relaxed text-body">{lane.blurb}</p>
+                <p className="text-body mb-3 text-sm leading-relaxed">{lane.blurb}</p>
                 <span className={`label-sm ${lane.accent ? 'text-rust' : ''}`}>
                   {lane.accent ? 'The Investing wing →' : `${n} ${n === 1 ? 'answer' : 'answers'}`}
                 </span>
@@ -151,16 +145,13 @@ export default function HomePage() {
 
       {/* -------------------------------------------------------- columns */}
       <Shell as="section" className="pt-20">
-        <SectionHead
-          title="Where the answers come from"
-          note="four standing columns, all year"
-        />
+        <SectionHead title="Where the answers come from" note="four standing columns, all year" />
         <div className="grid md:grid-cols-2 lg:grid-cols-4">
           {columnDefs.map((col, i) => (
             <div
               key={col.slug}
               className={`px-0 py-6 md:px-6 ${i === 0 ? 'md:pl-0' : ''} ${
-                i < columnDefs.length - 1 ? 'md:border-r md:border-rule' : 'md:pr-0'
+                i < columnDefs.length - 1 ? 'md:border-rule md:border-r' : 'md:pr-0'
               }`}
             >
               <h3 className="mb-2.5 text-[1.625rem]">
@@ -168,7 +159,7 @@ export default function HomePage() {
                   {col.label}
                 </Link>
               </h3>
-              <p className="mb-3 text-sm leading-relaxed text-body">{col.blurb}</p>
+              <p className="text-body mb-3 text-sm leading-relaxed">{col.blurb}</p>
               <Link href={`/columns/${col.slug}`} className="font-mono text-[0.6875rem]">
                 {entriesInColumn(col.slug).length} {col.unit} →
               </Link>
@@ -178,7 +169,7 @@ export default function HomePage() {
       </Shell>
 
       {/* ------------------------------------------------------- investing */}
-      <section className="mt-20 bg-ink py-16 text-bone">
+      <section className="bg-ink text-bone mt-20 py-16">
         <Shell>
           <Label small className="text-rust">
             A separate wing of this site
@@ -188,22 +179,34 @@ export default function HomePage() {
               <h2 className="mb-4 text-[clamp(2rem,5vw,3.25rem)] leading-[1.06] tracking-[-0.02em]">
                 Investing on the Front Range
               </h2>
-              <p className="mb-6 max-w-[44em] text-base leading-[1.7] text-dim">
+              <p className="text-dim mb-6 max-w-[44em] text-base leading-[1.7]">
                 Same question format, different questions. One page per submarket: what rents, what
                 carries, what the city just changed, and where the next ten years probably go.
                 Written for people who don&rsquo;t live here yet and can&rsquo;t drive the block
                 themselves.
               </p>
-              <div className="grid gap-px border border-rule-dark bg-rule-dark sm:grid-cols-2">
+              <div className="border-rule-dark bg-rule-dark grid gap-px border sm:grid-cols-2">
                 {[
-                  ['Submarket briefs', 'One page per place. Rent bands, vacancy, what the last twelve months of closings actually did.'],
-                  ['The rules, city by city', 'Short-term rental licensing, ADUs, occupancy limits — tracked where they change, not where they’re famous.'],
-                  ['Rent vs. carry', 'The quarterly math, plainly. Including the ones where the math doesn’t work and we say so.'],
-                  ['Ground-level notes', 'Hail, soil, sewer scopes, 1950s galvanized, and the six blocks where the water table matters.'],
+                  [
+                    'Submarket briefs',
+                    'One page per place. Rent bands, vacancy, what the last twelve months of closings actually did.',
+                  ],
+                  [
+                    'The rules, city by city',
+                    'Short-term rental licensing, ADUs, occupancy limits — tracked where they change, not where they’re famous.',
+                  ],
+                  [
+                    'Rent vs. carry',
+                    'The quarterly math, plainly. Including the ones where the math doesn’t work and we say so.',
+                  ],
+                  [
+                    'Ground-level notes',
+                    'Hail, soil, sewer scopes, 1950s galvanized, and the six blocks where the water table matters.',
+                  ],
                 ].map(([title, blurb]) => (
                   <div key={title} className="bg-ink p-5">
                     <h3 className="mb-2 text-2xl">{title}</h3>
-                    <p className="text-sm leading-relaxed text-dim">{blurb}</p>
+                    <p className="text-dim text-sm leading-relaxed">{blurb}</p>
                   </div>
                 ))}
               </div>
@@ -220,7 +223,7 @@ export default function HomePage() {
                     <Link
                       key={a.url}
                       href={a.url}
-                      className="border-b border-rule-dark py-3 text-[0.9375rem] leading-snug text-bone last:border-b-0 hover:text-rust"
+                      className="border-rule-dark text-bone hover:text-rust border-b py-3 text-[0.9375rem] leading-snug last:border-b-0"
                     >
                       {a.question}
                     </Link>
@@ -228,7 +231,7 @@ export default function HomePage() {
               </div>
               <Link
                 href="/investing"
-                className="label mt-5 inline-block border border-rust px-4 py-2.5 text-rust hover:bg-rust hover:text-bone"
+                className="label border-rust text-rust hover:bg-rust hover:text-bone mt-5 inline-block border px-4 py-2.5"
               >
                 Enter the wing
               </Link>
@@ -242,10 +245,10 @@ export default function HomePage() {
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <div>
             <Label small>Who&rsquo;s answering</Label>
-            <h2 className="mb-4 mt-3 text-[clamp(1.875rem,4.5vw,2.625rem)] leading-[1.1] tracking-[-0.015em]">
+            <h2 className="mt-3 mb-4 text-[clamp(1.875rem,4.5vw,2.625rem)] leading-[1.1] tracking-[-0.015em]">
               Two people, one car, and about nine years of eating our way up Federal.
             </h2>
-            <p className="mb-3.5 max-w-[40em] text-base leading-[1.7] text-body">
+            <p className="text-body mb-3.5 max-w-[40em] text-base leading-[1.7]">
               We answer every question ourselves. We&rsquo;ve lived in Baker, Wheat Ridge, and now a
               house in Arvada with a bad driveway. Yes, we sell real estate — it&rsquo;s how this
               pays for itself — and you&rsquo;ll hear about it exactly once per page, at the bottom,
@@ -255,7 +258,7 @@ export default function HomePage() {
               The longer version →
             </Link>
           </div>
-          <div className="grid gap-px border border-edge bg-edge sm:grid-cols-2">
+          <div className="border-edge bg-edge grid gap-px border sm:grid-cols-2">
             {[
               [counts.answers, 'answers'],
               [counts.places, 'place guides'],
@@ -263,7 +266,7 @@ export default function HomePage() {
               [counts.investing, 'investing briefs'],
             ].map(([n, label]) => (
               <div key={label as string} className="bg-bone p-6">
-                <div className="font-display text-4xl text-ink">{n as number}</div>
+                <div className="font-display text-ink text-4xl">{n as number}</div>
                 <Label small className="mt-1 block">
                   {label as string}
                 </Label>
@@ -276,15 +279,17 @@ export default function HomePage() {
       {/* ------------------------------------------------- category index */}
       <Shell as="section" className="pt-20">
         <SectionHead title="Browse by category" note="every answer has a home" heavy={false} />
-        <div className="mt-5 grid gap-px border border-edge bg-edge sm:grid-cols-2 lg:grid-cols-3">
+        <div className="border-edge bg-edge mt-5 grid gap-px border sm:grid-cols-2 lg:grid-cols-3">
           {categories.map((c) => (
             <Link
               key={c.slug}
               href={`/categories/${c.slug}`}
               className="group bg-bone p-5 transition-shadow hover:shadow-[inset_0_0_0_1px_var(--color-ink)]"
             >
-              <h3 className="text-xl text-ink group-hover:text-rust">{c.label}</h3>
-              {c.blurb ? <p className="mt-1.5 text-sm leading-relaxed text-body">{c.blurb}</p> : null}
+              <h3 className="text-ink group-hover:text-rust text-xl">{c.label}</h3>
+              {c.blurb ? (
+                <p className="text-body mt-1.5 text-sm leading-relaxed">{c.blurb}</p>
+              ) : null}
             </Link>
           ))}
         </div>
