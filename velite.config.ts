@@ -1,9 +1,16 @@
 import { defineConfig, defineCollection, s } from 'velite'
 import remarkGfm from 'remark-gfm'
-import remarkSmartypants from 'remark-smartypants'
+import remarkSmartypantsRaw from 'remark-smartypants'
 import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypePrettyCode from 'rehype-pretty-code'
+
+/**
+ * `remark-smartypants` is retext-based, so its `this` is a retext processor and
+ * TypeScript will not accept it in an mdast plugin list. The runtime behaviour
+ * is correct; only the declared processor type differs.
+ */
+const remarkSmartypants = remarkSmartypantsRaw as unknown as typeof remarkGfm
 
 /**
  * Content pipeline for a large library (hundreds+ of documents).

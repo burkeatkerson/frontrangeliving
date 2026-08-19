@@ -1,26 +1,194 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/**
+ * Front Range Living — design tokens.
+ *
+ * A single warm-paper palette. The site deliberately does not ship a dark
+ * theme: the whole identity is bone paper, ink, and one rust accent, and a
+ * second palette would dilute it.
+ */
+@theme {
+  /* Surfaces */
+  --color-bone: #f3efe7;
+  --color-bone-2: #eae4d8;
+  --color-paper: #fffdf8;
+
+  /* Ink */
+  --color-ink: #1a1714;
+  --color-body: #3d372f;
+  --color-muted: #5c544a;
+  --color-faint: #8a8072;
+  --color-dim: #a69c8b;
+
+  /* Accent */
+  --color-rust: #c4501f;
+  --color-rust-deep: #8f3712;
+
+  /* Rules */
+  --color-rule: #dcd4c4;
+  --color-edge: #cfc6b4;
+  --color-rule-dark: #3a342c;
+
+  /* Type */
+  --font-display: var(--font-instrument-serif), Georgia, 'Times New Roman', serif;
+  --font-sans: var(--font-instrument-sans), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, 'SF Mono', monospace;
+
+  /* Layout */
+  --spacing-gutter: 2.5rem;
+  --container-shell: 80rem; /* 1280px, the mockup's measure */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Sticky header height, so anchor links do not land under it. */
+    scroll-padding-top: 5.5rem;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    background-color: var(--color-bone);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  a {
+    color: var(--color-rust);
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--color-rust-deep);
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--color-rust);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-bone);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    text-wrap: pretty;
+  }
+
+  /* rehype-autolink-headings wraps the heading text in an anchor. Keep it
+     looking like a heading until hovered. */
+  .heading-anchor {
+    color: inherit;
+  }
+  .heading-anchor:hover {
+    color: var(--color-rust);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* The mono micro-label used throughout the mockup: eyebrows, stat lines,
+     nav items, counts. */
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-faint);
+  }
+
+  .label-sm {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-faint);
+  }
+
+  /* Bordered pill/box button. */
+  .chip {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.5625rem 1rem;
+    border: 1px solid var(--color-edge);
+    border-radius: 2px;
+    background: transparent;
+    color: var(--color-body);
+    cursor: pointer;
+    transition:
+      border-color 120ms ease,
+      background-color 120ms ease;
+  }
+  .chip:hover {
+    border-color: var(--color-ink);
+    background: var(--color-bone-2);
+    color: var(--color-ink);
+  }
+  .chip[aria-pressed='true'],
+  .chip[data-active='true'] {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-bone);
+  }
+
+  .chip-round {
+    border-radius: 99px;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  /* Faded hairline used above the footer. */
+  .rule-faded {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--color-edge) 3rem,
+      var(--color-edge) calc(100% - 3rem),
+      transparent
+    );
+  }
+}
+
+/**
+ * Article body. Tailwind Typography, retuned to the paper palette. Uses the
+ * `prose-frl` modifier so it can sit next to unstyled UI without leaking.
+ */
+@utility prose-frl {
+  --tw-prose-body: var(--color-body);
+  --tw-prose-headings: var(--color-ink);
+  --tw-prose-lead: var(--color-muted);
+  --tw-prose-links: var(--color-rust);
+  --tw-prose-bold: var(--color-ink);
+  --tw-prose-counters: var(--color-faint);
+  --tw-prose-bullets: var(--color-edge);
+  --tw-prose-hr: var(--color-rule);
+  --tw-prose-quotes: var(--color-ink);
+  --tw-prose-quote-borders: var(--color-rust);
+  --tw-prose-captions: var(--color-faint);
+  --tw-prose-code: var(--color-ink);
+  --tw-prose-pre-code: var(--color-ink);
+  --tw-prose-pre-bg: var(--color-bone-2);
+  --tw-prose-th-borders: var(--color-edge);
+  --tw-prose-td-borders: var(--color-rule);
 }

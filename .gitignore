@@ -46,3 +46,6 @@ next-env.d.ts
 
 # reference assets (design mockups)
 /reference
+
+# static export
+/out

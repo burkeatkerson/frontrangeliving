@@ -4,9 +4,17 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "build": "next build && npm run search:index",
+    "search:index": "pagefind --site out --output-subdir pagefind",
+    "start": "npx --yes serve out -l 3000",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write \"**/*.{ts,tsx,css,md,mdx,json,yml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,css,md,mdx,json,yml}\"",
+    "content": "velite build",
+    "content:watch": "velite dev",
+    "new": "node scripts/new-doc.mjs",
+    "check": "npm-run-all --parallel typecheck lint format:check"
   },
   "dependencies": {
     "clsx": "^2.1.1",
