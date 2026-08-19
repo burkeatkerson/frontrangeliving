@@ -161,12 +161,30 @@ folders; never commit them.
 
 ## Deploying
 
-The build produces `out/`. Point any static host at it.
+The build produces `out/`, which is completely self-contained — every page,
+`404.html`, the search index, the feed, the sitemap. Point any static host at
+it.
 
-- **Vercel** — zero config; [`vercel.json`](vercel.json) supplies caching and
-  security headers.
+- **Vercel** — [`vercel.json`](vercel.json) handles it.
 - **Netlify / Cloudflare Pages** — build `npm run build`, publish `out`;
   [`public/_headers`](public/_headers) carries the same rules.
+
+### Why `"framework": null` on Vercel
+
+This looks wrong in a Next.js repo, and it is load-bearing.
+
+Vercel auto-detects Next.js and hands the build to its Next.js runtime, which
+expects a server build and goes looking for `.next/routes-manifest.json`. This
+site has no server build — `output: 'export'` produces plain HTML in `out/` —
+so that lookup fails and the deploy errors out *after* a successful build.
+
+Setting `"framework": null` tells Vercel to treat the repo as what it actually
+is: a static site with a build step. It uploads `out/` verbatim, which also
+keeps `out/pagefind/` — the search index, written after `next build` — intact.
+
+If you ever drop `output: 'export'` to get ISR or on-demand image optimisation,
+remove `framework`, `outputDirectory`, and `trailingSlash` from `vercel.json`
+at the same time, and move the Pagefind step to index the server output.
 
 Set `NEXT_PUBLIC_SITE_URL` to the production origin (see
 [`.env.example`](.env.example)). It drives every canonical URL, the sitemap,
