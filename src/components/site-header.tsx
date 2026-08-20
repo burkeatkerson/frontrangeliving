@@ -16,6 +16,7 @@ interface NavItem {
 const NAV: readonly NavItem[] = [
   { href: '/answers', label: 'Ask' },
   { href: '/cities', label: 'Cities' },
+  { href: '/neighborhoods', label: 'Neighborhoods' },
   { href: '/places', label: 'Places' },
   { href: '/columns/taco-report', label: 'Eat' },
   { href: '/columns/ten-minutes-to-dirt', label: 'Outside' },

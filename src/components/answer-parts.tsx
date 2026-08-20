@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { Answer, Author } from '@/lib/content'
+import { placeUrlForSlug } from '@/lib/content'
 import { formatDate, revisionStamp } from '@/lib/utils'
 import { Label, StatList, ArrowLink } from './primitives'
 
@@ -44,9 +45,9 @@ export function AnswerPlaces({ places }: { places: Answer['places'] }) {
           ) : null}
           <p className="text-body mt-3 mb-3.5 text-sm leading-[1.62]">{p.why}</p>
           <StatList stats={p.stats} />
-          {p.place ? (
+          {p.place && placeUrlForSlug(p.place) ? (
             <div className="mt-3">
-              <ArrowLink href={`/places/${p.place}`}>Full guide</ArrowLink>
+              <ArrowLink href={placeUrlForSlug(p.place)!}>Full guide</ArrowLink>
             </div>
           ) : null}
         </div>

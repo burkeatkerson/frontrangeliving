@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
-import { allPlaces, regions } from '@/lib/content'
+import { allPlaces, neighborhoodsInCity, regions } from '@/lib/content'
 import { buildMetadata, listingGraph } from '@/lib/seo'
 import { JsonLd } from '@/components/jsonld'
 import { Shell, Label, SectionHead } from '@/components/primitives'
@@ -81,9 +81,11 @@ export default function CitiesIndex() {
                   >
                     <span>{c.name}</span>
                     <span className="text-faint shrink-0 font-mono text-[0.6875rem] whitespace-nowrap">
-                      {c.civic?.population
-                        ? `${c.civic.population.toLocaleString()}`
-                        : c.county?.replace(' County', '')}
+                      {neighborhoodsInCity(c.slug).length
+                        ? `${neighborhoodsInCity(c.slug).length} hoods`
+                        : c.civic?.population
+                          ? `${c.civic.population.toLocaleString()}`
+                          : c.county?.replace(' County', '')}
                     </span>
                   </Link>
                 </li>

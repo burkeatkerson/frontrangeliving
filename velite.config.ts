@@ -184,6 +184,59 @@ const places = defineCollection({
     })),
 })
 
+/**
+ * Neighborhood guides, namespaced by their parent city.
+ *
+ * The folder is the city slug — `neighborhoods/denver/highland.mdx` — which
+ * gives every document a `/neighborhoods/<city>/<slug>` URL. Namespacing by
+ * city is not cosmetic: "Old Town", "Downtown" and "Highlands" all exist in
+ * several Front Range cities, and a flat slug space would collide.
+ */
+const neighborhoods = defineCollection({
+  name: 'Neighborhood',
+  pattern: 'neighborhoods/**/*.mdx',
+  schema: s
+    .object({
+      ...base,
+      ...aeo,
+      path: s.path(),
+      body: s.mdx(),
+      toc: s.toc(),
+      metadata: s.metadata(),
+      excerpt: s.excerpt({ length: 240 }),
+      /** Neighborhood name as locals say it. */
+      name: s.string(),
+      /** Parent city slug. Must match a `kind: city` place guide. */
+      city: s.string().optional(),
+      /** Denver's official sector, or an equivalent local grouping. */
+      sector: s.string().optional(),
+      /** Rough boundaries, written the way people give directions. */
+      bounds: s.string().optional(),
+      /** Dominant housing eras and types, e.g. "1900-1930 brick bungalow". */
+      housing: s.array(s.string()).default([]),
+      /** Quick-scan stat lines. */
+      stats: s.array(s.string()).default([]),
+      geo: s.object({ lat: s.number(), lng: s.number() }).optional(),
+      /** Outbound authoritative links: registered neighborhood orgs, parks, districts. */
+      links: s
+        .array(s.object({ label: s.string(), url: s.string().url(), note: s.string().optional() }))
+        .default([]),
+    })
+    .transform((data) => {
+      const parts = data.path.split('/')
+      // `neighborhoods/<city>/<file>.mdx` -> city comes from the folder.
+      const city = data.city ?? parts[parts.length - 2] ?? 'denver'
+      const slug = slugFrom(data.path, data.slug)
+      return {
+        ...data,
+        city,
+        type: 'neighborhood' as const,
+        slug,
+        url: `/neighborhoods/${city}/${slug}`,
+      }
+    }),
+})
+
 const columns = defineCollection({
   name: 'ColumnEntry',
   pattern: 'columns/**/*.mdx',
@@ -293,7 +346,7 @@ export default defineConfig({
     name: '[name]-[hash:8].[ext]',
     clean: true,
   },
-  collections: { answers, places, columns, investing, pages, authors, taxonomy },
+  collections: { answers, places, neighborhoods, columns, investing, pages, authors, taxonomy },
   mdx: {
     remarkPlugins: [remarkGfm, remarkSmartypants],
     rehypePlugins: [

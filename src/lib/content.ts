@@ -1,6 +1,7 @@
 import {
   answers as rawAnswers,
   places as rawPlaces,
+  neighborhoods as rawNeighborhoods,
   columns as rawColumns,
   investing as rawInvesting,
   pages as rawPages,
@@ -8,17 +9,18 @@ import {
   taxonomy,
   type Answer,
   type Place,
+  type Neighborhood,
   type ColumnEntry,
   type InvestingBrief,
   type Page,
   type Author,
 } from '#content'
 
-export type { Answer, Place, ColumnEntry, InvestingBrief, Page, Author }
+export type { Answer, Place, Neighborhood, ColumnEntry, InvestingBrief, Page, Author }
 export { taxonomy }
 
 /** Any document that gets its own page, feed entry and sitemap row. */
-export type Doc = Answer | Place | ColumnEntry | InvestingBrief | Page
+export type Doc = Answer | Place | Neighborhood | ColumnEntry | InvestingBrief | Page
 
 /**
  * Listing pages only ever need these fields. Passing full documents (which
@@ -52,6 +54,9 @@ const byNewest = (a: { date: string }, b: { date: string }) => (a.date < b.date 
 
 export const allAnswers: Answer[] = publish(rawAnswers).sort(byNewest)
 export const allPlaces: Place[] = publish(rawPlaces).sort((a, b) => a.name.localeCompare(b.name))
+export const allNeighborhoods: Neighborhood[] = publish(rawNeighborhoods).sort((a, b) =>
+  a.name.localeCompare(b.name)
+)
 export const allColumns: ColumnEntry[] = publish(rawColumns).sort(byNewest)
 export const allInvesting: InvestingBrief[] = publish(rawInvesting).sort(byNewest)
 export const allPages: Page[] = publish(rawPages).sort(byNewest)
@@ -61,6 +66,7 @@ export const allAuthors: Author[] = [...rawAuthors]
 export const allDocs: Doc[] = [
   ...allAnswers,
   ...allPlaces,
+  ...allNeighborhoods,
   ...allColumns,
   ...allInvesting,
   ...allPages,
@@ -207,3 +213,57 @@ export const counts = {
   investing: allInvesting.length,
   total: allDocs.length,
 } as const
+
+// --- neighborhoods -----------------------------------------------------------
+
+/** Keyed `<city>/<slug>` because neighborhood names repeat across cities. */
+const neighborhoodByKey = new Map(allNeighborhoods.map((n) => [`${n.city}/${n.slug}`, n]))
+
+export const getNeighborhood = (city: string, slug: string) =>
+  neighborhoodByKey.get(`${city}/${slug}`)
+
+/** Every neighborhood in a city, alphabetical. */
+export const neighborhoodsInCity = (city: string) => allNeighborhoods.filter((n) => n.city === city)
+
+/** Cities that have at least one neighborhood guide, with their counts. */
+export const citiesWithNeighborhoods = (): {
+  city: Place
+  items: Neighborhood[]
+}[] =>
+  allPlaces
+    .filter((p) => p.kind === 'city')
+    .map((city) => ({ city, items: neighborhoodsInCity(city.slug) }))
+    .filter((g) => g.items.length > 0)
+    .sort((a, b) => b.items.length - a.items.length || a.city.name.localeCompare(b.city.name))
+
+/** Neighborhoods grouped by their city sector, in the order sectors first appear. */
+export const neighborhoodsBySector = (city: string) => {
+  const groups = new Map<string, Neighborhood[]>()
+  for (const n of neighborhoodsInCity(city)) {
+    const key = n.sector ?? 'Other'
+    if (!groups.has(key)) groups.set(key, [])
+    groups.get(key)!.push(n)
+  }
+  return [...groups.entries()]
+    .map(([sector, items]) => ({ sector, items }))
+    .sort((a, b) => a.sector.localeCompare(b.sector))
+}
+
+export const neighborhoodCounts = {
+  total: allNeighborhoods.length,
+  cities: new Set(allNeighborhoods.map((n) => n.city)).size,
+} as const
+
+/**
+ * Resolve a bare slug used in answer frontmatter to a real URL.
+ *
+ * Answers reference recommended places by slug alone. That slug may now be
+ * either a city guide or a neighborhood guide, so check both rather than
+ * assuming `/places/<slug>` and emitting a dead link.
+ */
+export function placeUrlForSlug(slug: string): string | undefined {
+  const place = placeBySlug.get(slug)
+  if (place) return place.url
+  const hood = allNeighborhoods.find((n) => n.slug === slug)
+  return hood?.url
+}

@@ -8,6 +8,7 @@ import {
   columnEntriesForPlace,
   getPlace,
   getRegion,
+  neighborhoodsInCity,
   summarize,
 } from '@/lib/content'
 import { docMetadata } from '@/lib/seo'
@@ -35,6 +36,7 @@ export default async function PlacePage({ params }: Props) {
   if (!place) notFound()
 
   const region = getRegion(place.region)
+  const hoods = neighborhoodsInCity(place.slug)
   const asked = summarize(answersMentioning(place.slug))
   const entries = summarize(columnEntriesForPlace(place.slug))
 
@@ -104,6 +106,28 @@ export default async function PlacePage({ params }: Props) {
         </>
       }
     >
+      {hoods.length ? (
+        <section className="border-rule border-b py-8" aria-labelledby="hoods-heading">
+          <Label small as="p" className="mb-3">
+            <span id="hoods-heading">
+              {hoods.length} {place.name} neighborhood {hoods.length === 1 ? 'guide' : 'guides'}
+            </span>
+          </Label>
+          <div className="flex flex-wrap gap-1.5">
+            {hoods.map((n) => (
+              <Link key={n.url} href={n.url} className="chip chip-round">
+                {n.name}
+              </Link>
+            ))}
+          </div>
+          <p className="mt-3 text-[0.9375rem]">
+            <Link href={`/neighborhoods/${place.slug}`}>
+              Browse all {place.name} neighborhoods →
+            </Link>
+          </p>
+        </section>
+      ) : null}
+
       {asked.length ? (
         <section className="border-rule border-b py-8" aria-labelledby="asked-heading">
           <Label small as="p" className="mb-3">

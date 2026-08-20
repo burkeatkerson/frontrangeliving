@@ -5,6 +5,7 @@ import {
   allInvesting,
   allPages,
   allPlaces,
+  citiesWithNeighborhoods,
   categories,
   columnDefs,
   counts,
@@ -41,6 +42,13 @@ export function GET() {
     sections.push(
       `## Place guides\n\n` +
         allPlaces.map((p) => line(p.name, p.url, oneLine(p.answer ?? p.summary))).join('\n')
+    )
+  }
+
+  for (const group of citiesWithNeighborhoods()) {
+    sections.push(
+      `## ${group.city.name} neighborhoods\n\n` +
+        group.items.map((n) => line(n.name, n.url, oneLine(n.answer ?? n.summary))).join('\n')
     )
   }
 

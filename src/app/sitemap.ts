@@ -1,6 +1,15 @@
 import type { MetadataRoute } from 'next'
 import { site, absoluteUrl } from '@/lib/site'
-import { allDocs, allAnswers, allTags, categories, columnDefs, lanes, regions } from '@/lib/content'
+import {
+  allDocs,
+  allAnswers,
+  allTags,
+  categories,
+  citiesWithNeighborhoods,
+  columnDefs,
+  lanes,
+  regions,
+} from '@/lib/content'
 import { paginate } from '@/lib/utils'
 
 // Emitted as a static file by `output: 'export'`.
@@ -21,6 +30,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: absoluteUrl('/columns'), changeFrequency: 'weekly', priority: 0.7 },
     { url: absoluteUrl('/investing'), changeFrequency: 'weekly', priority: 0.8 },
     { url: absoluteUrl('/topics'), changeFrequency: 'weekly', priority: 0.5 },
+    { url: absoluteUrl('/cities'), changeFrequency: 'weekly', priority: 0.9 },
+    { url: absoluteUrl('/neighborhoods'), changeFrequency: 'weekly', priority: 0.9 },
   ]
 
   const indexRoutes: MetadataRoute.Sitemap = [
@@ -48,6 +59,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: absoluteUrl(`/places/region/${r.slug}`),
       changeFrequency: 'weekly' as const,
       priority: 0.6,
+    })),
+    ...citiesWithNeighborhoods().map((g) => ({
+      url: absoluteUrl(`/neighborhoods/${g.city.slug}`),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
     })),
     ...allTags.map((t) => ({
       url: absoluteUrl(`/topics/${t.slug}`),
