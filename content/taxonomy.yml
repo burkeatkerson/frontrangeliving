@@ -34,6 +34,14 @@ columns:
     label: Ten Minutes to Dirt
     unit: trailheads
     blurb: Weeknight trails, listed from the neighborhood you'd leave from, sorted by how bad the parking gets.
+  - slug: the-oven-report
+    label: The Oven Report
+    unit: entries
+    blurb: Pizza, judged on the oven and the crust and nothing else. Where the fire is real and where it is a marketing photograph.
+  - slug: griddle-marks
+    label: Griddle Marks
+    unit: entries
+    blurb: Burgers. Smashed, skirted or stacked, and always the version the kitchen is actually proud of.
   - slug: after-dark
     label: After Dark
     unit: entries

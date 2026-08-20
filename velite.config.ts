@@ -246,9 +246,23 @@ const columns = defineCollection({
       ...aeo,
       ...body,
       path: s.path(),
-      /** Standing column: taco-report, ten-minutes-to-dirt, after-dark, saturday-with-kids. */
+      /** Standing column: taco-report, the-oven-report, griddle-marks, after-dark, … */
       column: s.string(),
       place: s.string().optional(), // slug of the related place guide
+      /** Neighborhood slug, for entries tied to a specific district. */
+      hood: s.string().optional(),
+      /**
+       * Fields for entries about a business. Addresses go in frontmatter rather
+       * than prose so they render consistently and can be re-verified in bulk.
+       */
+      address: s.string().optional(),
+      /** What we would actually order. */
+      order: s.array(s.string()).default([]),
+      /**
+       * When we last confirmed the place was open and the details correct.
+       * Restaurants close. An entry without this date is not trustworthy.
+       */
+      verified: s.isodate().optional(),
     })
     .transform((data) => ({
       ...data,
