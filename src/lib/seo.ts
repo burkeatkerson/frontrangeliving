@@ -13,7 +13,7 @@ import type {
 
 import { site, absoluteUrl } from './site'
 import type { Doc } from './content'
-import { getAuthors } from './content'
+import { getAuthors, getPlace } from './content'
 
 // ---------------------------------------------------------------- metadata
 
@@ -245,6 +245,50 @@ function placeNode(doc: Extract<Doc, { type: 'place' }>): SchemaPlace {
 }
 
 /**
+ * A neighborhood as a real-world entity.
+ *
+ * Emitted so an answer engine asked "what are the boundaries of Baker in
+ * Denver" or "which city is Olde Town Arvada in" can resolve it from this page
+ * and attribute the answer. `containedInPlace` carries the parent city.
+ */
+function neighborhoodNode(doc: Extract<Doc, { type: 'neighborhood' }>): SchemaPlace {
+  return {
+    '@type': 'Place',
+    '@id': absoluteUrl(doc.url) + '#place',
+    name: doc.name,
+    description: doc.answer ?? doc.summary,
+    ...(doc.bounds
+      ? {
+          additionalProperty: {
+            '@type': 'PropertyValue' as const,
+            name: 'boundaries',
+            value: doc.bounds,
+          },
+        }
+      : {}),
+    containedInPlace: {
+      '@type': 'City' as const,
+      // Resolve the parent city's display name from its own guide.
+      name: getPlace(doc.city)?.name ?? doc.city,
+      address: {
+        '@type': 'PostalAddress' as const,
+        addressRegion: 'CO',
+        addressCountry: 'US',
+      },
+    },
+    ...(doc.geo
+      ? {
+          geo: {
+            '@type': 'GeoCoordinates' as const,
+            latitude: doc.geo.lat,
+            longitude: doc.geo.lng,
+          },
+        }
+      : {}),
+  } as SchemaPlace
+}
+
+/**
  * The page graph for a content document.
  *
  * Three things here are specifically for answer engines rather than for
@@ -296,7 +340,9 @@ export function docGraph(doc: Doc, crumbs: readonly Crumb[]): Graph {
           ),
         }
       : {}),
-    ...(doc.type === 'place' ? { about: { '@id': `${url}#place` } } : {}),
+    ...(doc.type === 'place' || doc.type === 'neighborhood'
+      ? { about: { '@id': `${url}#place` } }
+      : {}),
   } as Article
 
   const nodes: Thing[] = [organizationNode as Thing, websiteNode as Thing, article as Thing]
@@ -305,6 +351,7 @@ export function docGraph(doc: Doc, crumbs: readonly Crumb[]): Graph {
   const faq = faqNode(doc)
   if (faq) nodes.push(faq as Thing)
   if (doc.type === 'place') nodes.push(placeNode(doc) as Thing)
+  if (doc.type === 'neighborhood') nodes.push(neighborhoodNode(doc) as Thing)
 
   return { '@context': 'https://schema.org', '@graph': nodes } as Graph
 }
