@@ -9,6 +9,7 @@ categories:
   - { slug: outside,       label: Outside,        blurb: Trails, water, snow, and where to park for all of it. }
   - { slug: with-kids,     label: With kids,      blurb: Shade, bathrooms, and hikes a six-year-old will finish. }
   - { slug: money,         label: Money,          blurb: What things cost and whether the math works. }
+  - { slug: owning,        label: Owning here,    blurb: From the first week in the house to the day you list it - sprinklers, hail, clay, and the city's rules. }
 
 lanes:
   - slug: out-of-state
@@ -20,6 +21,9 @@ lanes:
   - slug: first-time
     label: Buying a first place
     blurb: Where the money still goes furthest, and what a 1954 brick ranch is hiding.
+  - slug: homeowner
+    label: Already own here
+    blurb: You have the keys. Now the sprinklers, the hail roof, the clay under the slab, and the June 8 deadline nobody told you about.
   - slug: investor
     label: Investor from elsewhere
     blurb: Rents against carry, submarket by submarket, and which city just changed its rules.

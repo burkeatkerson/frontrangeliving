@@ -10,6 +10,15 @@ import {
   FactTable,
   PhotoSlot,
 } from './visuals'
+import {
+  Checklist,
+  Steps,
+  SeasonCalendar,
+  CostTable,
+  Compare,
+  Timeline,
+  Diagram,
+} from './home-visuals'
 
 /**
  * Velite compiles each MDX body to a function-body string. Evaluating it here
@@ -64,6 +73,14 @@ const components: MDXComponents = {
   ElevationScale: ElevationScale as never,
   FactTable: FactTable as never,
   PhotoSlot: PhotoSlot as never,
+  // Visual aids for the homeowner guides. See components/home-visuals.tsx.
+  Checklist: Checklist as never,
+  Steps: Steps as never,
+  SeasonCalendar: SeasonCalendar as never,
+  CostTable: CostTable as never,
+  Compare: Compare as never,
+  Timeline: Timeline as never,
+  Diagram: Diagram as never,
   img: ((props: ComponentPropsWithoutRef<'img'>) => (
     // eslint-disable-next-line @next/next/no-img-element
     <img {...props} alt={props.alt ?? ''} loading="lazy" decoding="async" className="w-full" />
