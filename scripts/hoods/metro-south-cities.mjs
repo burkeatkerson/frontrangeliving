@@ -2,7 +2,7 @@ import { SRC } from './_template.mjs'
 
 const src = [SRC.car, SRC.census]
 
-const CS = { city: 'colorado-springs', cityName: 'Colorado Springs', sector: 'Colorado Springs' }
+const CS = { city: 'colorado-springs', cityName: 'Colorado Springs' }
 const AU = { city: 'aurora', cityName: 'Aurora', sector: 'Aurora' }
 const LW = { city: 'lakewood', cityName: 'Lakewood', sector: 'Lakewood' }
 const AR = { city: 'arvada', cityName: 'Arvada', sector: 'Arvada' }
@@ -24,6 +24,7 @@ export const metroSouthHoods = [
   {
     ...CS,
     slug: 'old-colorado-city',
+    sector: 'Westside',
     name: 'Old Colorado City',
     featured: true,
     title: 'Old Colorado City, Colorado Springs — a neighborhood guide',
@@ -99,6 +100,7 @@ Waldo Canyon Fire burned nearby.
   {
     ...CS,
     slug: 'broadmoor',
+    sector: 'Southwest',
     name: 'The Broadmoor',
     featured: true,
     title: 'The Broadmoor, Colorado Springs — a neighborhood guide',
@@ -164,6 +166,7 @@ and the D12 schools.`,
   {
     ...CS,
     slug: 'briargate',
+    sector: 'North',
     name: 'Briargate',
     title: 'Briargate, Colorado Springs — a neighborhood guide',
     summary:
@@ -225,6 +228,7 @@ structural opinion on any foundation concern.`,
   {
     ...CS,
     slug: 'downtown-colorado-springs',
+    sector: 'Central',
     name: 'Downtown Colorado Springs',
     title: 'Downtown Colorado Springs — a neighborhood guide',
     summary:
